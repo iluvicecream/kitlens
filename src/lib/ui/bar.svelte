@@ -199,27 +199,4 @@
 	.setting-select:focus {
 		border-color: #ff3e00;
 	}
-
-	.setting-badge {
-		background: rgba(21, 21, 21, 0.05);
-		border: 1px solid rgba(21, 21, 21, 0.08);
-		border-radius: 4px;
-		padding: 2px 6px;
-		font-size: 10px;
-		color: rgba(21, 21, 21, 0.8);
-	}
-
-	.setting-divider {
-		height: 1px;
-		background: rgba(21, 21, 21, 0.06);
-		margin: 2px 0;
-	}
-
-	.placeholder-notice {
-		font-size: 10.5px;
-		color: rgba(21, 21, 21, 0.45);
-		line-height: 1.4;
-		text-align: center;
-		padding: 4px 2px 2px 2px;
-	}
 </style>
