@@ -1,5 +1,7 @@
 // Reexport your entry components here
 
+export * from './ide-deeplink.js';
+
 import type { Plugin, ResolvedConfig } from 'vite';
 
 const VIRTUAL_MODULE_ID = 'virtual:kitlens';

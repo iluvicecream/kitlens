@@ -1,7 +1,14 @@
 <script lang="ts">
 	import { inspector } from "#lib/inspector.svelte.js";
-	import Close from "#lib/ui/icon/Close.svelte";
-	import vscode from "#lib/ui/icon/vscode.svg";
+	import { settings } from "#lib/settings.svelte.js";
+	import vscode from "#lib/ui/icon/ide/vscode.svg";
+	import antigravity from "#lib/ui/icon/ide/antigravity.svg";
+	import Popup from "#lib/ui/popup.svelte";
+
+	const ideIcons = {
+		vscode: vscode,
+		antigravity: antigravity,
+	};
 </script>
 
 <svelte:window
@@ -28,21 +35,15 @@
 {/if}
 
 {#if inspector.selectedTag}
-	<div
-		class="popup"
-		style:top="{Math.max(8, inspector.popupPos.y + 8)}px"
-		style:left="{Math.max(8, inspector.popupPos.x + 8)}px"
+	<Popup
+		title={inspector.selectedTag}
+		style="top: {Math.max(8, inspector.popupPos.y + 8)}px; left: {Math.max(
+			8,
+			inspector.popupPos.x + 8,
+		)}px; max-width: 480px;"
+		onClose={inspector.closePopup}
+		closeOnOutsideClick
 	>
-		<div class="popup-header">
-			<span class="popup-tag">{inspector.selectedTag}</span>
-			<button
-				class="popup-close"
-				tabindex="-1"
-				onclick={inspector.closePopup}
-			>
-				<Close class="popup-close-icon" />
-			</button>
-		</div>
 		{#if inspector.selectedFilePath}
 			<div
 				class="popup-source"
@@ -58,14 +59,17 @@
 			<button
 				class="popup-vscode"
 				tabindex="-1"
-				onclick={inspector.openInVsCode}
-				title="Open in VS Code"
+				onclick={inspector.openInIde}
+				title="Open in {settings.currentIdeConfig.name}"
 			>
-				<img src={vscode} alt="vscode logo" />
-				Open in VSCode
+				<img
+					src={ideIcons[settings.ide]}
+					alt="{settings.currentIdeConfig.name} logo"
+				/>
+				Open in {settings.currentIdeConfig.name}
 			</button>
 		{/if}
-	</div>
+	</Popup>
 {/if}
 
 <style>
@@ -102,43 +106,11 @@
 		corner-shape: squircle;
 	}
 
-	.popup {
-		position: fixed;
-		z-index: 2147483647;
-
-		background: white;
-		border: 1px solid rgba(21, 21, 21, 0.08);
-
-		color: rgba(21, 21, 21, 1);
-		padding: 10px 12px;
-		border-radius: 35px;
-
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-			monospace;
-		font-size: 13px;
-		max-width: 480px;
-
-		corner-shape: squircle;
-	}
-
-	.popup-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 12px;
-	}
-
-	.popup-tag {
-		font-weight: 600;
-	}
-
 	.popup-source {
 		font-size: 11px;
-		color: #cdd6f4;
-		background: rgba(255, 255, 255, 0.06);
+		color: rgba(21, 21, 21, 0.85);
+		background: rgba(21, 21, 21, 0.04);
+		border: 1px solid rgba(21, 21, 21, 0.06);
 		padding: 4px 6px;
 		border-radius: 4px;
 		overflow: hidden;
@@ -147,28 +119,15 @@
 	}
 
 	.popup-file {
-		color: rgba(21, 21, 21, 0.36);
+		color: rgba(21, 21, 21, 0.5);
 	}
 
 	.popup-loc {
-		color: rgba(21, 21, 21, 0.72);
-	}
-
-	.popup-close {
-		background: transparent;
-		color: rgba(21, 21, 21, 1);
-		border: none;
-		outline: none;
-		border-radius: 4px;
-		padding: 4px;
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		color: rgba(21, 21, 21, 0.85);
+		font-weight: 600;
 	}
 
 	.popup-vscode {
-		margin-top: 4px;
 		background: rgba(255, 255, 255, 1);
 		color: rgba(21, 21, 21, 1);
 		border: 1px solid rgba(21, 21, 21, 0.08);

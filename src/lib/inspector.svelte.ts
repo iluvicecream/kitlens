@@ -1,3 +1,6 @@
+import { settings } from "./settings.svelte.js";
+import { getIdeDeeplink, openInIde } from "./ide-deeplink.js";
+
 class Inspector {
 	active = $state(false);
 	hoveredTag = $state<string | null>(null);
@@ -39,27 +42,33 @@ class Inspector {
 		return this.selectedFilePath;
 	}
 
-	get vscodeUrl(): string | null {
+	get ideUrl(): string | null {
 		if (!this.selectedFilePath) return null;
-		let path = this.selectedFilePath;
-		if (!path.startsWith('/') && this.projectRoot) {
-			path = `${this.projectRoot}/${path}`;
-		}
-		const fullPath = path.startsWith('/') ? path : '/' + path;
-		let url = `vscode://file${fullPath}`;
-		if (this.selectedLine != null) {
-			url += `:${this.selectedLine}`;
-			if (this.selectedColumn != null) {
-				url += `:${this.selectedColumn}`;
-			}
-		}
-		return url;
+		return getIdeDeeplink(settings.ide, {
+			filePath: this.selectedFilePath,
+			line: this.selectedLine,
+			column: this.selectedColumn,
+			projectRoot: this.projectRoot
+		});
 	}
 
-	openInVsCode = () => {
-		if (this.vscodeUrl) {
-			window.location.href = this.vscodeUrl;
+	get vscodeUrl(): string | null {
+		return this.ideUrl;
+	}
+
+	openInIde = () => {
+		if (this.selectedFilePath) {
+			openInIde(settings.ide, {
+				filePath: this.selectedFilePath,
+				line: this.selectedLine,
+				column: this.selectedColumn,
+				projectRoot: this.projectRoot
+			});
 		}
+	};
+
+	openInVsCode = () => {
+		this.openInIde();
 	};
 
 	isKitlensElement(el: Element | null): boolean {

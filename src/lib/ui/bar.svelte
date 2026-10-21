@@ -1,11 +1,53 @@
 <script lang="ts">
 	import { inspector } from "#lib/inspector.svelte.js";
+	import { settings } from "#lib/settings.svelte.js";
+	import { SUPPORTED_IDES, type IDE } from "#lib/ide-deeplink.js";
 	import KitLens from "./icon/KitLens.svelte";
 	import Inspect from "#lib/ui/icon/Inspect.svelte";
+	import Settings from "#lib/ui/icon/Settings.svelte";
 	import Inspector from "#lib/ui/inspector.svelte";
+	import Popup from "#lib/ui/popup.svelte";
+
+	let settingsOpen = $state(false);
+
+	function toggleSettings() {
+		settingsOpen = !settingsOpen;
+	}
+
+	function closeSettings() {
+		settingsOpen = false;
+	}
 </script>
 
 <Inspector />
+
+{#if settingsOpen}
+	<Popup
+		title="Settings"
+		style="bottom: 30px; right: 8px; width: 250px;"
+		onClose={closeSettings}
+		closeOnOutsideClick
+		ignoreOutsideSelector=".settings-toggle-btn"
+	>
+		{#snippet icon()}
+			<Settings size="14px" />
+		{/snippet}
+
+		<div class="setting-item">
+			<label class="setting-label" for="kitlens-ide-select">Editor</label>
+			<select
+				id="kitlens-ide-select"
+				class="setting-select"
+				value={settings.ide}
+				onchange={(e) => settings.setIde(e.currentTarget.value as IDE)}
+			>
+				{#each Object.values(SUPPORTED_IDES) as item}
+					<option value={item.id}>{item.name}</option>
+				{/each}
+			</select>
+		</div>
+	</Popup>
+{/if}
 
 <footer class="bottom-bar">
 	<div class="bar-left">
@@ -23,6 +65,19 @@
 			title="Toggle element inspector (pointer mode)"
 		>
 			<Inspect class="tool-icon" />
+		</button>
+	</div>
+	<div class="bar-right">
+		<button
+			class="tool-btn settings-toggle-btn"
+			class:active={settingsOpen}
+			tabindex="-1"
+			onmousedown={(e) => e.preventDefault()}
+			onclick={toggleSettings}
+			aria-pressed={settingsOpen}
+			title="Settings"
+		>
+			<Settings class="tool-icon" />
 		</button>
 	</div>
 </footer>
@@ -45,7 +100,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0 6px;
+		padding: 0px 0px 0px 8px;
 		box-sizing: border-box;
 		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
 			monospace;
@@ -53,7 +108,8 @@
 		user-select: none;
 	}
 
-	.bar-left {
+	.bar-left,
+	.bar-right {
 		display: flex;
 		align-items: center;
 		gap: 12px;
@@ -69,7 +125,7 @@
 		border-right: 1px solid rgba(255, 255, 255, 0.1);
 	}
 
-	.brand-icon {
+	:global(.brand-icon) {
 		width: 16px;
 		height: 16px;
 	}
@@ -101,5 +157,63 @@
 	.tool-btn.active {
 		background: #ff3e00;
 		color: #ffffff;
+	}
+
+	.setting-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-size: 11px;
+	}
+
+	.setting-label {
+		color: rgba(21, 21, 21, 0.7);
+	}
+
+	.setting-select {
+		background: rgba(21, 21, 21, 0.04);
+		border: 1px solid rgba(21, 21, 21, 0.12);
+		border-radius: 6px;
+		padding: 2px 6px;
+		font-family: inherit;
+		font-size: 11px;
+		color: rgba(21, 21, 21, 0.9);
+		cursor: pointer;
+		outline: none;
+		transition:
+			border-color 0.15s ease,
+			background-color 0.15s ease;
+	}
+
+	.setting-select:hover {
+		background: rgba(21, 21, 21, 0.08);
+		border-color: rgba(21, 21, 21, 0.2);
+	}
+
+	.setting-select:focus {
+		border-color: #ff3e00;
+	}
+
+	.setting-badge {
+		background: rgba(21, 21, 21, 0.05);
+		border: 1px solid rgba(21, 21, 21, 0.08);
+		border-radius: 4px;
+		padding: 2px 6px;
+		font-size: 10px;
+		color: rgba(21, 21, 21, 0.8);
+	}
+
+	.setting-divider {
+		height: 1px;
+		background: rgba(21, 21, 21, 0.06);
+		margin: 2px 0;
+	}
+
+	.placeholder-notice {
+		font-size: 10.5px;
+		color: rgba(21, 21, 21, 0.45);
+		line-height: 1.4;
+		text-align: center;
+		padding: 4px 2px 2px 2px;
 	}
 </style>
