@@ -1,12 +1,14 @@
+<svelte:options css="injected" />
+
 <script lang="ts">
-	import { inspector } from "#lib/inspector.svelte.js";
-	import { settings } from "#lib/settings.svelte.js";
-	import { SUPPORTED_IDES, type IDE } from "#lib/ide-deeplink.js";
+	import { inspector } from "../inspector.svelte.js";
+	import { settings } from "../settings.svelte.js";
+	import { SUPPORTED_IDES, type IDE } from "../ide-deeplink.js";
 	import KitLens from "./icon/KitLens.svelte";
-	import Inspect from "#lib/ui/icon/Inspect.svelte";
-	import Settings from "#lib/ui/icon/Settings.svelte";
-	import Inspector from "#lib/ui/inspector.svelte";
-	import Popup from "#lib/ui/popup.svelte";
+	import Inspect from "./icon/Inspect.svelte";
+	import Settings from "./icon/Settings.svelte";
+	import Inspector from "./inspector.svelte";
+	import Popup from "./popup.svelte";
 
 	let settingsOpen = $state(false);
 
@@ -83,6 +85,10 @@
 </footer>
 
 <style>
+	:global(:host) {
+		all: initial;
+	}
+
 	.bottom-bar {
 		position: fixed;
 		bottom: 0;

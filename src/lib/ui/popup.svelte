@@ -1,3 +1,5 @@
+<svelte:options css="injected" />
+
 <script lang="ts">
 	import type { Snippet } from "svelte";
 	import Close from "./icon/Close.svelte";
@@ -8,6 +10,8 @@
 		icon?: Snippet;
 		children?: Snippet;
 		onClose?: () => void;
+		x?: number;
+		y?: number;
 		style?: string;
 		class?: string;
 		closeOnOutsideClick?: boolean;
@@ -16,12 +20,17 @@
 		ariaLabel?: string;
 	}
 
+	const VIEWPORT_MARGIN = 8;
+	const BOTTOM_BAR_HEIGHT = 24;
+
 	let {
 		title,
 		header,
 		icon,
 		children,
 		onClose,
+		x,
+		y,
 		style = "",
 		class: className = "",
 		closeOnOutsideClick = true,
@@ -31,18 +40,68 @@
 	}: Props = $props();
 
 	let popupRef = $state<HTMLDivElement | null>(null);
+	let innerWidth = $state(
+		typeof window !== "undefined" ? window.innerWidth : 0
+	);
+	let innerHeight = $state(
+		typeof window !== "undefined" ? window.innerHeight : 0
+	);
+	let popupWidth = $state(0);
+	let popupHeight = $state(0);
+
+	$effect(() => {
+		if (!popupRef) return;
+
+		const updateSize = () => {
+			if (!popupRef) return;
+			popupWidth = popupRef.offsetWidth;
+			popupHeight = popupRef.offsetHeight;
+		};
+
+		updateSize();
+
+		const observer = new ResizeObserver(updateSize);
+		observer.observe(popupRef);
+
+		return () => observer.disconnect();
+	});
+
+	let clampedLeft = $derived.by(() => {
+		if (x === undefined) return undefined;
+		if (!innerWidth) return Math.max(VIEWPORT_MARGIN, x);
+		const maxLeft = Math.max(
+			VIEWPORT_MARGIN,
+			innerWidth - popupWidth - VIEWPORT_MARGIN
+		);
+		return Math.min(Math.max(VIEWPORT_MARGIN, x), maxLeft);
+	});
+
+	let clampedTop = $derived.by(() => {
+		if (y === undefined) return undefined;
+		if (!innerHeight) return Math.max(VIEWPORT_MARGIN, y);
+		const maxTop = Math.max(
+			VIEWPORT_MARGIN,
+			innerHeight - BOTTOM_BAR_HEIGHT - popupHeight - VIEWPORT_MARGIN
+		);
+		return Math.min(Math.max(VIEWPORT_MARGIN, y), maxTop);
+	});
 
 	function handlePointerDown(e: PointerEvent) {
-		if (!closeOnOutsideClick || !onClose) return;
-		const target = e.target instanceof Element ? e.target : null;
+		if (!closeOnOutsideClick || !onClose || !popupRef) return;
+		const path = e.composedPath();
+		if (path.includes(popupRef)) return;
 		if (
-			popupRef &&
-			target &&
-			!popupRef.contains(target) &&
-			(!ignoreOutsideSelector || !target.closest(ignoreOutsideSelector))
+			ignoreOutsideSelector &&
+			path.some(
+				(node) =>
+					node instanceof Element &&
+					(node.matches(ignoreOutsideSelector) ||
+						Boolean(node.closest(ignoreOutsideSelector)))
+			)
 		) {
-			onClose();
+			return;
 		}
+		onClose();
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
@@ -53,12 +112,19 @@
 	}
 </script>
 
-<svelte:window onpointerdown={handlePointerDown} onkeydown={handleKeydown} />
+<svelte:window
+	bind:innerWidth
+	bind:innerHeight
+	onpointerdown={handlePointerDown}
+	onkeydown={handleKeydown}
+/>
 
 <div
 	bind:this={popupRef}
 	class="kitlens-popup {className}"
 	{style}
+	style:left={clampedLeft !== undefined ? `${clampedLeft}px` : undefined}
+	style:top={clampedTop !== undefined ? `${clampedTop}px` : undefined}
 	{role}
 	aria-label={ariaLabel ?? title ?? "Popup"}
 >
@@ -113,6 +179,7 @@
 		font-size: 12px;
 		user-select: none;
 		box-sizing: border-box;
+		max-width: calc(100vw - 16px);
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;

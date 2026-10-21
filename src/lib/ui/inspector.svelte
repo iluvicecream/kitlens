@@ -1,17 +1,71 @@
+<svelte:options css="injected" />
+
 <script lang="ts">
-	import { inspector } from "#lib/inspector.svelte.js";
-	import { settings } from "#lib/settings.svelte.js";
-	import vscode from "#lib/ui/icon/ide/vscode.svg";
-	import antigravity from "#lib/ui/icon/ide/antigravity.svg";
-	import Popup from "#lib/ui/popup.svelte";
+	import { inspector } from "../inspector.svelte.js";
+	import { settings } from "../settings.svelte.js";
+	import vscode from "./icon/ide/vscode.svg";
+	import antigravity from "./icon/ide/antigravity.svg";
+	import Popup from "./popup.svelte";
 
 	const ideIcons = {
 		vscode: vscode,
 		antigravity: antigravity,
 	};
+
+	const VIEWPORT_MARGIN = 8;
+	const BOTTOM_BAR_HEIGHT = 24;
+
+	let tooltipRef = $state<HTMLDivElement | null>(null);
+	let innerWidth = $state(
+		typeof window !== "undefined" ? window.innerWidth : 0,
+	);
+	let innerHeight = $state(
+		typeof window !== "undefined" ? window.innerHeight : 0,
+	);
+	let tooltipWidth = $state(0);
+	let tooltipHeight = $state(0);
+
+	$effect(() => {
+		if (!tooltipRef) return;
+
+		const updateSize = () => {
+			if (!tooltipRef) return;
+			tooltipWidth = tooltipRef.offsetWidth;
+			tooltipHeight = tooltipRef.offsetHeight;
+		};
+
+		updateSize();
+
+		const observer = new ResizeObserver(updateSize);
+		observer.observe(tooltipRef);
+
+		return () => observer.disconnect();
+	});
+
+	let tooltipLeft = $derived.by(() => {
+		const targetX = inspector.pointer.x + 12;
+		if (!innerWidth) return Math.max(VIEWPORT_MARGIN, targetX);
+		const maxLeft = Math.max(
+			VIEWPORT_MARGIN,
+			innerWidth - tooltipWidth - VIEWPORT_MARGIN,
+		);
+		return Math.min(Math.max(VIEWPORT_MARGIN, targetX), maxLeft);
+	});
+
+	let tooltipTop = $derived.by(() => {
+		const targetY = inspector.pointer.y - 32;
+		if (!innerHeight) return Math.max(VIEWPORT_MARGIN, targetY);
+		const maxTop = Math.max(
+			VIEWPORT_MARGIN,
+			innerHeight - BOTTOM_BAR_HEIGHT - tooltipHeight - VIEWPORT_MARGIN,
+		);
+		return Math.min(Math.max(VIEWPORT_MARGIN, targetY), maxTop);
+	});
 </script>
 
 <svelte:window
+	bind:innerWidth
+	bind:innerHeight
 	onpointermove={inspector.handlePointerMove}
 	onclickcapture={inspector.handleClick}
 	onkeydown={inspector.handleKeyDown}
@@ -26,9 +80,10 @@
 		style:height="{inspector.rect.height}px"
 	></div>
 	<div
+		bind:this={tooltipRef}
 		class="tooltip"
-		style:top="{Math.max(8, inspector.pointer.y - 32)}px"
-		style:left="{inspector.pointer.x + 12}px"
+		style:top="{tooltipTop}px"
+		style:left="{tooltipLeft}px"
 	>
 		{inspector.hoveredTag}
 	</div>
@@ -37,10 +92,9 @@
 {#if inspector.selectedTag}
 	<Popup
 		title={inspector.selectedTag}
-		style="top: {Math.max(8, inspector.popupPos.y + 8)}px; left: {Math.max(
-			8,
-			inspector.popupPos.x + 8,
-		)}px; max-width: 480px;"
+		x={inspector.popupPos.x + 8}
+		y={inspector.popupPos.y + 8}
+		style="max-width: min(480px, calc(100vw - 16px));"
 		onClose={inspector.closePopup}
 		closeOnOutsideClick
 	>

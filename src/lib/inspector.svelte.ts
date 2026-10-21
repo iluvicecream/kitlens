@@ -73,7 +73,9 @@ class Inspector {
 
 	isKitlensElement(el: Element | null): boolean {
 		if (!el) return false;
-		return Boolean(el.closest('#__kitlens-host'));
+		if (el.closest('#__kitlens-host')) return true;
+		const root = el.getRootNode();
+		return root instanceof ShadowRoot && root.host.id === '__kitlens-host';
 	}
 
 	handlePointerMove = (e: PointerEvent) => {
@@ -98,6 +100,10 @@ class Inspector {
 
 	handleClick = (e: MouseEvent) => {
 		if (!this.active) return;
+
+		if (e.composedPath().some((node) => node instanceof Element && node.id === '__kitlens-host')) {
+			return;
+		}
 
 		const target =
 			e.target instanceof Element ? e.target : document.elementFromPoint(e.clientX, e.clientY);

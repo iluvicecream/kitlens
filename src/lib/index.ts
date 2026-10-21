@@ -2,6 +2,7 @@
 
 export * from './ide-deeplink.js';
 
+import { fileURLToPath } from 'node:url';
 import type { Plugin, ResolvedConfig } from 'vite';
 
 const VIRTUAL_MODULE_ID = 'virtual:kitlens';
@@ -9,6 +10,8 @@ const RESOLVED_VIRTUAL_MODULE_ID = '\0' + VIRTUAL_MODULE_ID;
 
 export function kitlens(): Plugin {
     let root = '';
+    const barPath = fileURLToPath(new URL('./ui/bar.svelte', import.meta.url));
+    const inspectorPath = fileURLToPath(new URL('./inspector.svelte.js', import.meta.url));
 
     return {
         name: 'kitlens',
@@ -28,8 +31,8 @@ export function kitlens(): Plugin {
             if (id === RESOLVED_VIRTUAL_MODULE_ID) {
                 return `
 			import { mount } from 'svelte';
-			import Bar from '#lib/ui/bar.svelte';
-			import { inspector } from '#lib/inspector.svelte.js';
+			import Bar from ${JSON.stringify(barPath)};
+			import { inspector } from ${JSON.stringify(inspectorPath)};
 
 			inspector.projectRoot = ${JSON.stringify(root)};
 
@@ -37,7 +40,8 @@ export function kitlens(): Plugin {
 				const host = document.createElement('div');
 				host.id = '__kitlens-host';
 				document.body.appendChild(host);
-				mount(Bar, { target: host });
+				const shadow = host.attachShadow({ mode: 'open' });
+				mount(Bar, { target: shadow });
 			}
 		`;
             }
