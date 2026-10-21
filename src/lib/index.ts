@@ -1,14 +1,20 @@
 // Reexport your entry components here
 
-import type { Plugin } from 'vite';
+import type { Plugin, ResolvedConfig } from 'vite';
 
 const VIRTUAL_MODULE_ID = 'virtual:kitlens';
 const RESOLVED_VIRTUAL_MODULE_ID = '\0' + VIRTUAL_MODULE_ID;
 
 export function kitlens(): Plugin {
+    let root = '';
+
     return {
         name: 'kitlens',
         apply: 'serve',
+
+        configResolved(config: ResolvedConfig) {
+            root = config.root;
+        },
 
         resolveId(id) {
             if (id === VIRTUAL_MODULE_ID) {
@@ -20,12 +26,16 @@ export function kitlens(): Plugin {
             if (id === RESOLVED_VIRTUAL_MODULE_ID) {
                 return `
 			import { mount } from 'svelte';
-			import Fab from '#lib/ui/fab.svelte';
+			import Bar from '#lib/ui/bar.svelte';
+			import { inspector } from '#lib/inspector.svelte.js';
+
+			inspector.projectRoot = ${JSON.stringify(root)};
+
 			if (typeof window !== 'undefined' && !document.getElementById('__kitlens-host')) {
 				const host = document.createElement('div');
 				host.id = '__kitlens-host';
 				document.body.appendChild(host);
-				mount(Fab, { target: host });
+				mount(Bar, { target: host });
 			}
 		`;
             }
