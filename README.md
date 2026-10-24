@@ -1,6 +1,8 @@
 # KitLens
 A short and sweet DevTools for your SvelteKit application.
 
+![Gif showing the library in action.](readme.gif)
+
 ## Quick Start
 
 ```sh
