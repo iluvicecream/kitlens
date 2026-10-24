@@ -1,7 +1,7 @@
 {
 	"name": "@perr/kitlens",
 	"description": "SvelteKit DevTools",
-	"version": "0.0.2",
+	"version": "0.1.0",
 	"author": "perr",
 	"license": "MIT",
 	"repository": {
