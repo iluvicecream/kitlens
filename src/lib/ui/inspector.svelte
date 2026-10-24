@@ -5,11 +5,13 @@
 	import { settings } from "../settings.svelte.js";
 	import vscode from "./icon/ide/vscode.svg";
 	import antigravity from "./icon/ide/antigravity.svg";
+	import cursor from "./icon/ide/cursor.svg";
 	import Popup from "./popup.svelte";
 
 	const ideIcons = {
 		vscode: vscode,
 		antigravity: antigravity,
+		cursor: cursor,
 	};
 
 	const VIEWPORT_MARGIN = 8;
@@ -116,7 +118,9 @@
 		{#snippet header()}
 			<div class="popup-custom-title">
 				{#if inspector.selectedComponent}
-					<span class="tag-component">{inspector.selectedComponent}</span>
+					<span class="tag-component"
+						>{inspector.selectedComponent}</span
+					>
 					<span class="tag-sep">/</span>
 				{/if}
 				<span>{inspector.selectedTag}</span>

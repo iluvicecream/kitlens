@@ -1,4 +1,4 @@
-export type IDE = 'vscode' | 'antigravity';
+export type IDE = 'vscode' | 'antigravity' | 'cursor';
 
 export interface IdeConfig {
 	id: IDE;
@@ -16,6 +16,11 @@ export const SUPPORTED_IDES: Record<IDE, IdeConfig> = {
 		id: 'antigravity',
 		name: 'Antigravity IDE',
 		scheme: 'antigravity-ide'
+	},
+	cursor: {
+		id: 'cursor',
+		name: 'Cursor',
+		scheme: 'cursor'
 	}
 };
 
@@ -75,6 +80,30 @@ export function getAntigravityDeeplink({
 }
 
 /**
+ * Generate a deeplink URL for Cursor.
+ */
+export function getCursorDeeplink({
+	filePath,
+	line,
+	column,
+	projectRoot
+}: DeeplinkOptions): string {
+	let path = filePath;
+	if (!path.startsWith('/') && projectRoot) {
+		path = `${projectRoot}/${path}`;
+	}
+	const fullPath = path.startsWith('/') ? path : '/' + path;
+	let url = `cursor://file${fullPath}`;
+	if (line != null) {
+		url += `:${line}`;
+		if (column != null) {
+			url += `:${column}`;
+		}
+	}
+	return url;
+}
+
+/**
  * Generate a deeplink URL for the specified IDE.
  */
 export function getIdeDeeplink(ide: IDE, options: DeeplinkOptions): string {
@@ -83,6 +112,8 @@ export function getIdeDeeplink(ide: IDE, options: DeeplinkOptions): string {
 			return getVsCodeDeeplink(options);
 		case 'antigravity':
 			return getAntigravityDeeplink(options);
+		case 'cursor':
+			return getCursorDeeplink(options);
 		default:
 			return getVsCodeDeeplink(options);
 	}
@@ -111,4 +142,11 @@ export function openInVsCode(options: DeeplinkOptions): void {
  */
 export function openInAntigravity(options: DeeplinkOptions): void {
 	openInIde('antigravity', options);
+}
+
+/**
+ * Open a file in Cursor via its deeplink.
+ */
+export function openInCursor(options: DeeplinkOptions): void {
+	openInIde('cursor', options);
 }
