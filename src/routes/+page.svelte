@@ -332,6 +332,17 @@ export default <span style="color:#7aa6da;">defineConfig</span>({<br>
     <div class="code-block">
         <p class="code-command">{@html usage}</p>
     </div>
+
+    <h1 class="lib-name">SOURCE INSPECT</h1>
+    <p class="lib-desc">
+        KITLENS by default will open the file path in vs code but you can set it
+        to your prefered editor in the settings.
+    </p>
+    <div class="vid-container" aria-hidden="true">
+        <video autoplay muted loop class="lib-video">
+            <source src="settings-showcase.mp4" type="video/mp4" />
+        </video>
+    </div>
 </div>
 
 <style>
