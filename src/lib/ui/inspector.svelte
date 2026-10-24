@@ -72,6 +72,15 @@
 />
 
 {#if inspector.active && inspector.hoveredTag && inspector.rect}
+	{#if inspector.hoveredComponent && inspector.componentRect}
+		<div
+			class="highlight-component"
+			style:top="{inspector.componentRect.top - 4}px"
+			style:left="{inspector.componentRect.left - 4}px"
+			style:width="{inspector.componentRect.width + 8}px"
+			style:height="{inspector.componentRect.height + 8}px"
+		></div>
+	{/if}
 	<div
 		class="highlight"
 		style:top="{inspector.rect.top}px"
@@ -85,19 +94,34 @@
 		style:top="{tooltipTop}px"
 		style:left="{tooltipLeft}px"
 	>
-		{inspector.hoveredTag}
+		{#if inspector.hoveredComponent}
+			<span class="tag-component">{inspector.hoveredComponent}</span>
+			<span class="tag-sep">/</span>
+		{/if}
+		<span>{inspector.hoveredTag}</span>
 	</div>
 {/if}
 
 {#if inspector.selectedTag}
 	<Popup
-		title={inspector.selectedTag}
+		title={inspector.selectedComponent
+			? `${inspector.selectedComponent} / ${inspector.selectedTag}`
+			: inspector.selectedTag}
 		x={inspector.popupPos.x + 8}
 		y={inspector.popupPos.y + 8}
 		style="max-width: min(480px, calc(100vw - 16px));"
 		onClose={inspector.closePopup}
 		closeOnOutsideClick
 	>
+		{#snippet header()}
+			<div class="popup-custom-title">
+				{#if inspector.selectedComponent}
+					<span class="tag-component">{inspector.selectedComponent}</span>
+					<span class="tag-sep">/</span>
+				{/if}
+				<span>{inspector.selectedTag}</span>
+			</div>
+		{/snippet}
 		{#if inspector.selectedFilePath}
 			<div
 				class="popup-source"
@@ -127,6 +151,16 @@
 {/if}
 
 <style>
+	.highlight-component {
+		position: fixed;
+		z-index: 2147483645;
+		pointer-events: none;
+		border: 2px dashed #ff6a00;
+		background: rgba(255, 106, 0, 0.06);
+		border-radius: 6px;
+		box-sizing: border-box;
+	}
+
 	.highlight {
 		position: fixed;
 		z-index: 2147483646;
@@ -154,6 +188,28 @@
 
 		padding: 4px 6px;
 		white-space: nowrap;
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.popup-custom-title {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 18px;
+		color: white;
+		text-transform: uppercase;
+		font-family: "Google Sans Flex", sans-serif;
+		font-weight: 1000;
+	}
+
+	.tag-component {
+		color: #ff6a00;
+	}
+
+	.tag-sep {
+		color: rgb(150, 150, 150);
 	}
 
 	.popup-source {
