@@ -1,3 +1,7 @@
+<script>
+    import Testcomponent from "#lib/testcomponent.svelte";
+</script>
+
 <h1>Welcome to your library project</h1>
 <p>
     Create your package using @sveltejs/package and preview/showcase your work
@@ -9,3 +13,4 @@
 </p>
 
 <button>Test</button>
+<Testcomponent />

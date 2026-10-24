@@ -36,15 +36,15 @@
 		closeOnOutsideClick = true,
 		ignoreOutsideSelector = "",
 		role = "dialog",
-		ariaLabel
+		ariaLabel,
 	}: Props = $props();
 
 	let popupRef = $state<HTMLDivElement | null>(null);
 	let innerWidth = $state(
-		typeof window !== "undefined" ? window.innerWidth : 0
+		typeof window !== "undefined" ? window.innerWidth : 0,
 	);
 	let innerHeight = $state(
-		typeof window !== "undefined" ? window.innerHeight : 0
+		typeof window !== "undefined" ? window.innerHeight : 0,
 	);
 	let popupWidth = $state(0);
 	let popupHeight = $state(0);
@@ -71,7 +71,7 @@
 		if (!innerWidth) return Math.max(VIEWPORT_MARGIN, x);
 		const maxLeft = Math.max(
 			VIEWPORT_MARGIN,
-			innerWidth - popupWidth - VIEWPORT_MARGIN
+			innerWidth - popupWidth - VIEWPORT_MARGIN,
 		);
 		return Math.min(Math.max(VIEWPORT_MARGIN, x), maxLeft);
 	});
@@ -81,7 +81,7 @@
 		if (!innerHeight) return Math.max(VIEWPORT_MARGIN, y);
 		const maxTop = Math.max(
 			VIEWPORT_MARGIN,
-			innerHeight - BOTTOM_BAR_HEIGHT - popupHeight - VIEWPORT_MARGIN
+			innerHeight - BOTTOM_BAR_HEIGHT - popupHeight - VIEWPORT_MARGIN,
 		);
 		return Math.min(Math.max(VIEWPORT_MARGIN, y), maxTop);
 	});
@@ -96,7 +96,7 @@
 				(node) =>
 					node instanceof Element &&
 					(node.matches(ignoreOutsideSelector) ||
-						Boolean(node.closest(ignoreOutsideSelector)))
+						Boolean(node.closest(ignoreOutsideSelector))),
 			)
 		) {
 			return;
@@ -166,14 +166,11 @@
 		position: fixed;
 		z-index: 2147483647;
 
-		background: #ffffff;
-		border: 1px solid rgba(21, 21, 21, 0.08);
-		border-radius: 12px;
-		box-shadow:
-			0 10px 25px -5px rgba(0, 0, 0, 0.1),
-			0 4px 6px -2px rgba(0, 0, 0, 0.05);
+		background: black;
+		border-radius: 2px;
+		box-shadow: 0 0 0 1px rgba(21, 21, 21, 0.06);
 
-		color: rgba(21, 21, 21, 1);
+		color: white;
 		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
 			monospace;
 		font-size: 12px;
@@ -202,7 +199,10 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 12px;
-		padding: 8px 10px;
+		padding-top: 6px;
+		padding-right: 8px;
+		padding-left: 8px;
+
 		border-bottom: 1px solid rgba(21, 21, 21, 0.06);
 		background: rgba(21, 21, 21, 0.02);
 	}
@@ -212,16 +212,19 @@
 		align-items: center;
 		gap: 6px;
 		font-weight: 600;
-		font-size: 12px;
-		color: rgba(21, 21, 21, 0.85);
+		font-size: 18px;
+		color: white;
+		text-transform: uppercase;
+		font-family: "Google Sans Flex", sans-serif;
+		font-weight: 1000;
 	}
 
 	.popup-close {
 		background: transparent;
-		color: rgba(21, 21, 21, 0.6);
+		color: white;
 		border: none;
 		outline: none;
-		border-radius: 4px;
+		border-radius: 2px;
 		padding: 2px;
 		cursor: pointer;
 		display: flex;
@@ -233,8 +236,8 @@
 	}
 
 	.popup-close:hover {
-		color: rgba(21, 21, 21, 1);
-		background-color: rgba(21, 21, 21, 0.06);
+		color: white;
+		background-color: rgb(33, 33, 33);
 	}
 
 	.popup-body {

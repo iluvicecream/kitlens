@@ -142,29 +142,24 @@
 		z-index: 2147483647;
 		pointer-events: none;
 
-		border: 1px solid rgba(21, 21, 21, 0.08);
-		background-color: white;
-		color: rgba(21, 21, 21, 1);
-
-		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-			monospace;
+		background-color: black;
+		color: white;
+		font-family: "Google Sans Flex", sans-serif;
 		font-size: 12px;
-		font-weight: 600;
+		font-weight: 800;
+		text-transform: uppercase;
 
-		line-height: 1;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+		border-radius: 2px;
 
-		padding: 6px 8px;
-
-		border-radius: 200px;
+		padding: 4px 6px;
 		white-space: nowrap;
-		corner-shape: squircle;
 	}
 
 	.popup-source {
 		font-size: 11px;
-		color: rgba(21, 21, 21, 0.85);
-		background: rgba(21, 21, 21, 0.04);
-		border: 1px solid rgba(21, 21, 21, 0.06);
+		color: white;
+		background: rgb(33, 33, 33);
 		padding: 4px 6px;
 		border-radius: 4px;
 		overflow: hidden;
@@ -173,42 +168,45 @@
 	}
 
 	.popup-file {
-		color: rgba(21, 21, 21, 0.5);
+		color: rgb(150, 150, 150);
 	}
 
 	.popup-loc {
-		color: rgba(21, 21, 21, 0.85);
+		color: white;
 		font-weight: 600;
 	}
 
 	.popup-vscode {
-		background: rgba(255, 255, 255, 1);
-		color: rgba(21, 21, 21, 1);
-		border: 1px solid rgba(21, 21, 21, 0.08);
-		border-radius: 6px;
+		background-color: white;
+		color: black;
+		border: none;
+		border-radius: 2px;
+		box-shadow: 0 0 0 1px rgba(21, 21, 21, 0.06);
 		padding: 6px 10px;
-		font-family: inherit;
-		font-size: 12px;
-		font-weight: 500;
+
 		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		gap: 6px;
+
 		transition:
-			background 0.15s ease,
-			border-color 0.15s ease,
-			color 0.15s ease;
+			background 0.1s ease,
+			border-color 0.1s ease,
+			color 0.1s ease;
+
+		font-family: "Google Sans Flex", sans-serif;
+		font-weight: 700;
+		text-transform: uppercase;
 	}
 
 	.popup-vscode img {
-		width: 12px;
-		height: 12px;
+		width: 16px;
+		height: 16px;
 	}
 
 	.popup-vscode:hover {
-		background: rgba(21, 21, 21, 0.08);
-		border-color: rgba(21, 21, 21, 0.2);
-		color: rgba(21, 21, 21, 1);
+		background-color: rgb(33, 33, 33);
+		color: white;
 	}
 </style>

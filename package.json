@@ -63,5 +63,8 @@
 	"imports": {
 		"#lib": "./src/lib/index.js",
 		"#lib/*": "./src/lib/*"
+	},
+	"dependencies": {
+		"@web-kits/audio": "^0.2.0"
 	}
 }

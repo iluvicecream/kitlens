@@ -21,6 +21,15 @@
 	}
 </script>
 
+<svelte:head>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,slnt,wdth,wght,ROND@1..144,0,25..151,1..1000,0..100&display=swap"
+		rel="stylesheet"
+	/>
+</svelte:head>
+
 <Inspector />
 
 {#if settingsOpen}
@@ -53,10 +62,8 @@
 
 <footer class="bottom-bar">
 	<div class="bar-left">
-		<div class="brand">
-			<KitLens class="brand-icon" color="#FF3E00" size="16px" />
-			<span class="brand-name">Kitlens</span>
-		</div>
+		<span class="brand-name">KITLENS</span>
+
 		<button
 			class="tool-btn"
 			class:active={inspector.active}
@@ -97,11 +104,7 @@
 		height: 24px;
 		z-index: 2147483647;
 
-		background: transparent;
-		backdrop-filter: blur(16px);
-		-webkit-backdrop-filter: blur(16px);
-
-		border-top: 1px solid rgba(21, 21, 21, 0.08);
+		background: #ff6a00;
 
 		display: flex;
 		align-items: center;
@@ -121,25 +124,15 @@
 		gap: 12px;
 	}
 
-	.brand {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		font-weight: 600;
-		color: #ffffff;
-		padding-right: 8px;
-		border-right: 1px solid rgba(255, 255, 255, 0.1);
-	}
-
-	:global(.brand-icon) {
-		width: 16px;
-		height: 16px;
-	}
-
 	.brand-name {
-		color: rgba(21, 21, 21, 1);
-		font-size: 12px;
-		letter-spacing: 0.5px;
+		color: #fff;
+		font-family: "Google Sans Flex", sans-serif;
+		font-weight: 1000;
+		font-variation-settings:
+			"slnt" 0,
+			"wdth" 120,
+			"opsz" 72,
+			"ROND" 0;
 	}
 
 	.tool-btn {
@@ -150,10 +143,6 @@
 		cursor: pointer;
 		display: flex;
 		align-items: center;
-		transition:
-			background 0.15s ease,
-			border-color 0.15s ease,
-			color 0.15s ease;
 	}
 
 	.tool-btn:hover {
@@ -161,8 +150,8 @@
 	}
 
 	.tool-btn.active {
-		background: #ff3e00;
-		color: #ffffff;
+		background: black;
+		color: white;
 	}
 
 	.setting-item {
@@ -172,28 +161,16 @@
 		font-size: 11px;
 	}
 
-	.setting-label {
-		color: rgba(21, 21, 21, 0.7);
-	}
-
 	.setting-select {
-		background: rgba(21, 21, 21, 0.04);
+		background: white;
 		border: 1px solid rgba(21, 21, 21, 0.12);
-		border-radius: 6px;
+		border-radius: 2px;
 		padding: 2px 6px;
 		font-family: inherit;
 		font-size: 11px;
 		color: rgba(21, 21, 21, 0.9);
 		cursor: pointer;
 		outline: none;
-		transition:
-			border-color 0.15s ease,
-			background-color 0.15s ease;
-	}
-
-	.setting-select:hover {
-		background: rgba(21, 21, 21, 0.08);
-		border-color: rgba(21, 21, 21, 0.2);
 	}
 
 	.setting-select:focus {
